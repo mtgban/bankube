@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: ${TRAEFIK_IMAGE}
+    volumes:
+      - ${VOL1}
+      - ${VOL2}
+    command:
+      - ${FLAG1}
+      - ${FLAG2}
+      - ${FLAG3}
+    ports:
+      - ${PORT1}
+      - ${PORT2}
+    
+  mtgban-website:
+    image: ${SITE_IMAGE}
+    environment:
+      - CONFIG_VER=${CONFIG_VER}
+      - SECRET_NAME=${SECRET_NAME}
+      - PROJECT_ID=${PROJECT_ID}
+    volumes:
+      - ${SITE_VOL}
+    command: 
+      - ${COMMAND}
+    ports:
+      - ${PORTS}
+
+  influxdb:
+    image: ${INFLUX_DB_IMAGE}
+    environment:
+      - MODE=${MODE}
+      - USERNAME=${USERNAME}
+      - PASSWORD=${PASSWORD}
+      - ORG=${ORG}
+      - BUCKET=${BUCKET}
+      - TOKEN=${TOKEN}
+    volumes:
+      - ${VOL}
+    ports:
+      - ${PORTS}
+
+  keydb-master:
+    image: ${KDB_IMAGE}
+    command: ${KM_COMMAND}
+    ports:
+      - ${KM_PORTS}
+    networks:
+      - keydb_network
+
+  keydb-replica:
+    image: ${KDB_IMAGE}
+    command: ${KR_COMMAND}
+    networks:
+      - keydb_network
+
+networks:
+  keydb_network:
+ 
